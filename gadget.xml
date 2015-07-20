@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Sophia">
+    <Require feature="rpc"/>
+    <Require feature="views"/><!-- To Pass data to the App--> 
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+      
+	  
+      //Here some ros topics and connection codes. 
+      <script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+	  <script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+	  //Include the ROS connection to the ROS Servers
+	  <script type="text/javascript" type="text/javascript">
+	  
+	  var ros = new ROSLIB.Ros ({ 
+	  url : 'ws://localhost:5000'
+	  }); 
+	  
+	  ros.on('connection', function() {
+	  console.log('Connected to ROS'); 
+	  }); 
+	  
+	ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+	});
+
+	ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+	});
+
+//Topics for a chat response
+
+  var responses = new ROSLIB.Topic({
+    ros : ros,
+    name : '/eva/chatbot_responses',
+    messageType : 'std_msgs/String'
+  });
+//Read the above from the ROS topic 
+  listener.subscribe(function(message) {
+  }); 
+  
+  //===========================================
+  
+  //Now listen to the function: 
+  
+  //Get the Text input from the file and then transport it back to the file. 
+  
+  var textInput= new ROSLIB.Topic({
+	ros: ros, 
+	name: '/eva/chatbot_speech', 
+	messageType : 'chatbot/ChatMessage'
+	}); 
+	
+	var chatMessage= new ROSLIB.Message({
+	utterance : 'Chat Input Here' , 
+	confidence : 90
+	}); 
+	textInput.publish(chatMessage); 
+	  </script>
+	  <div id="container" style="width: 250px; "> 
+	  Hello World
+	  </div>
+      
+      <!-- Now i have access to the hangouts JavaScript API on can link all the scripts from here-->
+      <!-- It must be placed in a publicly accessable location for to be fetched by Google Servers--> 
+      <!-- They need to be accessed by the browsers of the hangout participants --> 
+    ]]>
+  </Content>
+</Module>
